@@ -231,3 +231,45 @@ header h1 {
         padding: 25px;
     }
 }
+
+/* 車代カードのスタイル */
+.car-total-card {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+    color: #444;
+    font-weight: 600;
+}
+
+#carTotalAmount {
+    font-size: 16px;
+    color: #222;
+}
+
+.car-my-share {
+    color: #666;
+    font-weight: normal;
+    font-size: 13px;
+}
+
+/* チェックボックスのスタイル */
+.checkbox-group {
+    margin-bottom: 16px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #222;
+    cursor: pointer;
+}
