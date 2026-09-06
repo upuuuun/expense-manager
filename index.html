@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#222222">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="出費管理">
+    <link rel="manifest" href="manifest.json">
+    <title>出費管理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>出費管理</h1>
+            <div class="month-selector">
+                <button id="prevMonth" aria-label="前の月">‹</button>
+                <h2 id="currentMonth"></h2>
+                <button id="nextMonth" aria-label="次の月">›</button>
+            </div>
+        </header>
+
+        <section class="total-card">
+            <p>今月の出費</p>
+            <div id="totalAmount">¥0</div>
+        </section>
+
+        <section class="add-section">
+            <h2>出費を追加</h2>
+
+            <div class="input-group">
+                <label for="date">日付</label>
+                <input type="date" id="date">
+            </div>
+
+            <div class="input-group">
+                <label for="amount">金額</label>
+                <input type="number" id="amount" inputmode="numeric" min="1" step="1" placeholder="例：1200">
+            </div>
+
+            <div class="input-group">
+                <label for="memo">メモ</label>
+                <input type="text" id="memo" autocomplete="off" placeholder="例：昼飯">
+            </div>
+
+            <button id="addButton" class="add-button">＋ 出費を追加</button>
+        </section>
+
+        <section class="expense-section">
+            <h2>出費一覧</h2>
+            <div id="expenseList"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
