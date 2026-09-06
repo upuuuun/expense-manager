@@ -24,8 +24,13 @@
         </header>
 
         <section class="total-card">
-            <p>今月の出費</p>
+            <p>今月の出費（自分負担合計）</p>
             <div id="totalAmount">¥0</div>
+            <!-- ▼ 追加: 車代の合計表示エリア -->
+            <div id="carTotalCard" class="car-total-card">
+                🚗 車代総額: <span id="carTotalAmount">¥0</span>
+                <span class="car-my-share">（自分負担: <span id="carMyShareAmount">¥0</span>）</span>
+            </div>
         </section>
 
         <section class="add-section">
@@ -37,13 +42,21 @@
             </div>
 
             <div class="input-group">
-                <label for="amount">金額</label>
+                <label for="amount">金額（車代は総額を入力）</label>
                 <input type="number" id="amount" inputmode="numeric" min="1" step="1" placeholder="例：1200">
+            </div>
+
+            <!-- ▼ 追加: 車代チェックボックス -->
+            <div class="input-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="isCar">
+                    <span>🚗 レンタカー代（半額精算）</span>
+                </label>
             </div>
 
             <div class="input-group">
                 <label for="memo">メモ</label>
-                <input type="text" id="memo" autocomplete="off" placeholder="例：昼飯">
+                <input type="text" id="memo" autocomplete="off" placeholder="例：昼飯、〇〇レンタカー">
             </div>
 
             <button id="addButton" class="add-button">＋ 出費を追加</button>
