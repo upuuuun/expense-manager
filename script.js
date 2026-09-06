@@ -4,9 +4,12 @@ let currentDate = new Date();
 
 const currentMonthElement = document.getElementById("currentMonth");
 const totalAmountElement = document.getElementById("totalAmount");
+const carTotalAmountElement = document.getElementById("carTotalAmount");
+const carMyShareAmountElement = document.getElementById("carMyShareAmount");
 const expenseListElement = document.getElementById("expenseList");
 const dateInput = document.getElementById("date");
 const amountInput = document.getElementById("amount");
+const isCarInput = document.getElementById("isCar");
 const memoInput = document.getElementById("memo");
 
 function getLocalDateString(date = new Date()) {
@@ -33,20 +36,26 @@ function renderExpenses() {
 
     const monthlyExpenses = expenses.filter(expense => {
         const [expenseYear, expenseMonth] = expense.date.split("-").map(Number);
-
         return expenseYear === year && expenseMonth === month;
     });
 
-    const total = monthlyExpenses.reduce(
-        (sum, expense) => sum + expense.amount,
-        0
-    );
+    // 全体合計（車代は半額、通常出費は全額で計算）
+    const total = monthlyExpenses.reduce((sum, expense) => {
+        const myShare = expense.isCar ? expense.amount / 2 : expense.amount;
+        return sum + myShare;
+    }, 0);
+
+    // 車代の総額および自分負担分の集計
+    const carExpenses = monthlyExpenses.filter(expense => expense.isCar);
+    const carTotal = carExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const carMyShare = carTotal / 2;
 
     totalAmountElement.textContent = `¥${total.toLocaleString()}`;
+    carTotalAmountElement.textContent = `¥${carTotal.toLocaleString()}`;
+    carMyShareAmountElement.textContent = `¥${carMyShare.toLocaleString()}`;
 
     if (monthlyExpenses.length === 0) {
-        expenseListElement.innerHTML =
-            `<div class="empty">この月の出費はありません</div>`;
+        expenseListElement.innerHTML = `<div class="empty">この月の出費はありません</div>`;
         return;
     }
 
@@ -66,18 +75,16 @@ function renderExpenses() {
     dates.forEach(date => {
         const dayExpenses = grouped[date];
 
-        const dayTotal = dayExpenses.reduce(
-            (sum, expense) => sum + expense.amount,
-            0
-        );
+        // 日別合計（自分負担分で計算）
+        const dayTotal = dayExpenses.reduce((sum, expense) => {
+            const myShare = expense.isCar ? expense.amount / 2 : expense.amount;
+            return sum + myShare;
+        }, 0);
 
         const [yearNum, monthNum, dayNum] = date.split("-").map(Number);
         const dateObject = new Date(yearNum, monthNum - 1, dayNum);
 
-        const weekday = ["日", "月", "火", "水", "木", "金", "土"][
-            dateObject.getDay()
-        ];
-
+        const weekday = ["日", "月", "火", "水", "木", "金", "土"][dateObject.getDay()];
         const formattedDate = `${monthNum}月${dayNum}日（${weekday}）`;
 
         const group = document.createElement("div");
@@ -107,7 +114,13 @@ function renderExpenses() {
 
             const memo = document.createElement("span");
             memo.className = "expense-memo";
-            memo.textContent = expense.memo || "メモなし";
+            
+            // 車代の場合はアイコンと注記を表示
+            if (expense.isCar) {
+                memo.textContent = `🚗 ${expense.memo || "レンタカー代"} (総額: ¥${expense.amount.toLocaleString()})`;
+            } else {
+                memo.textContent = expense.memo || "メモなし";
+            }
 
             info.appendChild(memo);
 
@@ -115,7 +128,10 @@ function renderExpenses() {
 
             const amount = document.createElement("span");
             amount.className = "expense-amount";
-            amount.textContent = `¥${expense.amount.toLocaleString()}`;
+            
+            // リストの金額は「自分負担分」を表示
+            const displayAmount = expense.isCar ? expense.amount / 2 : expense.amount;
+            amount.textContent = `¥${displayAmount.toLocaleString()}`;
 
             const deleteButton = document.createElement("button");
             deleteButton.className = "delete-button";
@@ -139,6 +155,7 @@ function renderExpenses() {
 function addExpense() {
     const date = dateInput.value;
     const amount = Number(amountInput.value);
+    const isCar = isCarInput.checked;
     const memo = memoInput.value.trim();
 
     if (!date) {
@@ -156,6 +173,7 @@ function addExpense() {
         id: Date.now().toString(),
         date,
         amount,
+        isCar,
         memo
     };
 
@@ -164,6 +182,7 @@ function addExpense() {
     updateMonth();
 
     amountInput.value = "";
+    isCarInput.checked = false;
     memoInput.value = "";
     amountInput.focus();
 }
